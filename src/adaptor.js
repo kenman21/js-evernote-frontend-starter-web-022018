@@ -1,10 +1,19 @@
 class Adaptor {
-  constructor {
+  constructor() {
 
   }
 
+  newUser(json){
+    let newUser = new User()
+    newUser.name = json[0].name
+    newUser.id = json[0].id
+    newUser.notes = json[0].notes
+    debugger;
+    console.log(json[0].id)
+  }
+
   get(url) {
-    fetch(url).then(resp => resp.json()).then(console.log)
+    return fetch(url).then(resp => resp.json()).then(json=>this.newUser(json))
   }
 
   create(url, obj) {
