@@ -1,8 +1,16 @@
+storeNotes = []
+
 class Note {
-  constructor(title, body, user){
+  constructor(title, body, userID){
     this.title = title
     this.body = body
-    this.user = user
+    this.userId = userID
+    storeNotes.push(this)
+
+  }
+
+  static all() {
+    return storeNotes.slice()
   }
 
   render(){

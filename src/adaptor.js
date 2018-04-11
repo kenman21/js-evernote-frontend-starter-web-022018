@@ -3,17 +3,21 @@ class Adaptor {
 
   }
 
-  newUser(json){
-    let newUser = new User()
-    newUser.name = json[0].name
-    newUser.id = json[0].id
-    newUser.notes = json[0].notes
-    debugger;
-    console.log(json[0].id)
-  }
+  renderUserNotes(url) {
+    const sideBar = document.getElementById('sidebar')
+    return fetch(url).then(resp => resp.json()).then(json => {
 
-  get(url) {
-    return fetch(url).then(resp => resp.json()).then(json=>this.newUser(json))
+      let currentUser
+
+      currentUser = new User(json[0].name, json[0].id)
+      json[0].notes.forEach(note => new Note(note.title, note.body, currentUser.id))
+
+      sideBar.innerHTML = currentUser.renderNotes()
+
+      
+
+      addEventListener('click', NoteDetails)
+    })
   }
 
   create(url, obj) {
