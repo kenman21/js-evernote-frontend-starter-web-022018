@@ -5,18 +5,48 @@ class Adaptor {
 
   renderUserNotes(url) {
     const sideBar = document.getElementById('sidebar')
+    const main = document.getElementById('main-content')
     return fetch(url).then(resp => resp.json()).then(json => {
+      const currentUser = new User(json[0].name, json[0].id)
 
-      let currentUser
-
-      currentUser = new User(json[0].name, json[0].id)
       json[0].notes.forEach(note => new Note(note.title, note.body, currentUser.id))
 
       sideBar.innerHTML = currentUser.renderNotes()
 
-      
+      function currentUserReturn(){
+        return currentUser
+      }
 
-      addEventListener('click', NoteDetails)
+      // function displayDetails(e) {
+        // let targetNote;
+        // if (e.target.tagName==="A"){
+        //   targetNote = Note.all().find(note=>note.id===parseInt(e.target.id))
+        //   main.innerHTML = targetNote.renderFullDetails()
+        // } else if (e.target.className==="delete"){
+        //   targetNote = Note.all().find(note=>note.id===parseInt(e.target.id))
+        //   targetNote.deleteNote(targetNote)
+        //   debugger;
+        // }
+      // }
+
+
+      document.addEventListener('click', e=>{
+        let targetNote;
+        if (e.target.tagName==="A"){
+          targetNote = Note.all().find(note=>note.id===parseInt(e.target.id))
+          main.innerHTML = targetNote.renderFullDetails()
+        } else if (e.target.className==="delete"){
+          targetNote = Note.all().find(note=>note.id===parseInt(e.target.id))
+          targetNote.deleteNote(targetNote)
+          let targetUser = User.all().find(user=>user.id===parseInt(e.target.getAttribute("user")))
+          document.getElementById('sidebar').innerHTML = targetUser.renderNotes()
+          e.target.parentElement.remove()
+          fetch(`http://localhost:3000/api/v1/notes/${targetNote.id}`, {
+            method: "DELETE"
+          })
+          // targetUser.renderNotes()
+        }
+      })
     })
   }
 
@@ -33,6 +63,7 @@ class Adaptor {
   }
 
   delete() {
+    debugger;
     //delete from backend
   }
 
